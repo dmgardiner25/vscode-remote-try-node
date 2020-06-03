@@ -23,7 +23,7 @@ RUN apt-get update -yq && apt-get install -yq default-jdk vim sudo xtail fish zs
 RUN curl -sSL https://aka.ms/vsls-linux-prereq-script | bash -s
 
 # Build git 2.27.0 from source
-RUN apt-get install -y gettext
+RUN apt-get remove -y git && apt-get install -y gettext
 RUN curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp
 RUN (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install)
 
@@ -113,4 +113,4 @@ RUN rm ${NVS_HOME}/cache/*
 RUN ln -s /opt/nodejs/10.17.0/bin/node ${NVS_HOME}/cache/node
 RUN sed -i "s/node\/[0-9.]\+/node\/10.17.0/" ${NVS_HOME}/defaults.json
 
-CMD ["/.vsonline/bin/vso", "bootstrap"]
+#CMD ["/.vsonline/bin/vso", "bootstrap"]
