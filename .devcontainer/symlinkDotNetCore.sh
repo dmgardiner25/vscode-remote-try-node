@@ -1,10 +1,14 @@
 #!/bin/bash
+#--------------------------------------------------------------------------------------------------------------
+#  Copyright (c) Microsoft Corporation. All rights reserved.
+#  Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
+#--------------------------------------------------------------------------------------------------------------
 
 set -ex
 
 splitSdksDir="/opt/dotnet/sdks"
 
-allSdksDir="/home/vsonline/.dotnet"
+allSdksDir="/home/codespace/.dotnet"
 mkdir -p "$allSdksDir"
 
 # Copy latest muxer and license files
