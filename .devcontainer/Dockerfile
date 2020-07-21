@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
-FROM mcr.microsoft.com/oryx/build:vso-20200417.5 as kitchensink
+FROM mcr.microsoft.com/oryx/build:vso-20200601.2 as kitchensink
 
 ARG BASH_PROMPT="PS1='\[\e]0;\u: \w\a\]\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '"
 ARG FISH_PROMPT="function fish_prompt\n    set_color green\n    echo -n (whoami)\n    set_color normal\n    echo -n \":\"\n    set_color blue\n    echo -n (pwd)\n    set_color normal\n    echo -n \"> \"\nend\n"
@@ -10,7 +10,7 @@ ARG ZSH_PROMPT="autoload -Uz promptinit\npromptinit\nprompt adam2"
 
 # Define extra paths:
 # Language executables provided by Oryx -  see https://github.com/microsoft/Oryx/blob/master/images/build/slim.Dockerfile#L223
-ARG EXTRA_PATHS="/opt/oryx:/opt/nodejs/lts/bin:/opt/python/latest/bin:/opt/yarn/stable/bin:/home/codespace/.dotnet/tools:/opt/php/lts/bin"
+ARG EXTRA_PATHS="/opt/oryx:/opt/nodejs/lts/bin:/opt/python/latest/bin:/opt/yarn/stable/bin:/home/codespace/.dotnet/tools"
 ARG EXTRA_PATHS_OVERRIDES="~/.dotnet"
 # ~/.local/bin - For 'pip install --user'
 # ~/.npm-global/bin - For npm global bin directory in user directory
@@ -30,6 +30,8 @@ ENV DOTNET_ROOT=/home/codespace/.dotnet
 
 # Add script to fix .NET Core pathing
 ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
+
+ADD git-ed.sh /tmp/codespace/git-ed.sh
 
  # Install packages, setup codespace user
 RUN apt-get update -yq\
@@ -131,6 +133,11 @@ RUN apt-get update -yq\
     #
     # Remove 'imagemagick imagemagick-6-common' due to http://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2019-10131
     && apt-get purge -y imagemagick imagemagick-6-common \
+    #
+    # Configure VSCode as the default editor for git commits
+    && sudo -u codespace mkdir -p /home/codespace/.local/bin \
+    && install -o codespace -g codespace -m 755 /tmp/codespace/git-ed.sh /home/codespace/.local/bin/git-ed.sh \
+    && sudo -u codespace git config --global core.editor "/home/codespace/.local/bin/git-ed.sh" \
     #
     # Clean up
     && apt-get autoremove -y \
