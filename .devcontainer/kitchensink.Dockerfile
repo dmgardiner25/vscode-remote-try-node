@@ -23,10 +23,6 @@ RUN apt-get update -yq && apt-get install -yq default-jdk vim sudo xtail fish zs
 RUN curl -sSL https://aka.ms/vsls-linux-prereq-script | bash -s
 
 # Build git 2.27.0 from source
-RUN apt-get install -y gettext
-RUN curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp
-RUN (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install)
-RUN rm -rf /tmp/git-2.27.0
 
 # Install Git LFS
 RUN curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash
@@ -61,7 +57,7 @@ ARG ZSH_PROMPT="autoload -Uz promptinit\npromptinit\nprompt adam2"
 
 # Define extra paths:
 # Language executables provided by Oryx -  see https://github.com/microsoft/Oryx/blob/master/images/build/slim.Dockerfile#L223
-ARG EXTRA_PATHS="/opt/oryx:/opt/nodejs/lts/bin:/opt/python/latest/bin:/opt/yarn/stable/bin:/home/vsonline/.dotnet/tools:/opt/php/lts/bin"
+ARG EXTRA_PATHS="/opt/oryx:/opt/nodejs/lts/bin:/opt/python/latest/bin:/opt/yarn/stable/bin:/opt/php/lts/bin"
 ARG EXTRA_PATHS_OVERRIDES="~/.dotnet"
 # ~/.local/bin - For 'pip install --user'
 # ~/.npm-global/bin - For npm global bin directory in user directory
@@ -89,7 +85,6 @@ RUN mkdir /home/vsonline/.vsonline
 ENV SHELL=/bin/bash
 
 # Enable dotnet tools to be used.
-ENV DOTNET_ROOT=/home/vsonline/.dotnet
 
 # .NET Core #
 # Hack to get dotnet core sdks in the right place
