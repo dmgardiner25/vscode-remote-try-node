@@ -1,0 +1,8 @@
+{
+	"name": "Codespaces",
+	"dockerFile": "Dockerfile",
+	"remoteUser": "codespace",
+	"workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
+	"workspaceFolder": "/home/codespace/workspace",
+
+}
