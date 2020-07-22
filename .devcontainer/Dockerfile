@@ -44,12 +44,12 @@ RUN curl -s https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-
 # Install Azure CLI
 RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
 
-RUN git config --system --add credential.helper '/.vsonline/bin/vso gitCredential'
+RUN git config --system --add credential.helper '/.codespace/bin/vso gitCredential'
 
 ENV ORYX_ENV_TYPE=vsonline-present
 
 # Set npm global directory for the current Node.js version to a user-writable location. It is also added to PATH below.
-RUN npm config -g set prefix /home/vsonline/.npm-global
+RUN npm config -g set prefix /home/codespace/.npm-global
 
 ARG BASH_PROMPT="PS1='\[\e]0;\u: \w\a\]\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '"
 ARG FISH_PROMPT="function fish_prompt\n    set_color green\n    echo -n (whoami)\n    set_color normal\n    echo -n \":\"\n    set_color blue\n    echo -n (pwd)\n    set_color normal\n    echo -n \"> \"\nend\n"
@@ -68,18 +68,18 @@ RUN { echo && echo $BASH_PROMPT ; } | tee -a /etc/bash.bashrc >> /etc/skel/.bash
 RUN printf "$FISH_PROMPT" >> /etc/fish/conf.d/fish_prompt.fish
 RUN { echo && echo $ZSH_PROMPT ; } >> /etc/zsh/zshrc >> /etc/skel/.zshrc
 
-RUN useradd --create-home --shell /bin/bash vsonline && \
+RUN useradd --create-home --shell /bin/bash codespace && \
         mkdir -p /etc/sudoers.d && \
-        echo "vsonline ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd && \
+        echo "codespace ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd && \
         echo "Defaults secure_path=\"/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/bin:${EXTRA_PATHS}\"" >> /etc/sudoers.d/securepath
 
 RUN groupadd -g 800 docker && \
-    usermod -a -G docker vsonline
+    usermod -a -G docker codespace
 
-USER vsonline
+USER codespace
 
 # Create a directory to store VSOnline transaction data.
-RUN mkdir /home/vsonline/.vsonline
+RUN mkdir /home/codespace/.vsonline
 
 # Default to bash shell (other shells available at /usr/bin/fish and /usr/bin/zsh)
 ENV SHELL=/bin/bash
@@ -90,17 +90,17 @@ ENV SHELL=/bin/bash
 # Hack to get dotnet core sdks in the right place
 # Oryx images do not put dotnet on the path because it will break AppService.
 # The following script will put the dotnet's at /home/vsonline/.dotnet folder where dotnet will look by default.
-ADD symlinkDotNetCore.sh /home/vsonline/symlinkDotNetCore.sh
-RUN sudo chmod +x /home/vsonline/symlinkDotNetCore.sh 
-RUN bash -c /home/vsonline/symlinkDotNetCore.sh
-RUN rm /home/vsonline/symlinkDotNetCore.sh
+ADD symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh
+RUN sudo chmod +x /home/codespace/symlinkDotNetCore.sh 
+RUN bash -c /home/codespace/symlinkDotNetCore.sh
+RUN rm /home/codespace/symlinkDotNetCore.sh
 
 # Node.js #
 # Install nvm (popular Node.js version-management tool)
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | bash
-RUN rm -rf /home/vsonline/.nvm/.git
+RUN rm -rf /home/codespace/.nvm/.git
 # Install nvs (alternate cross-platform Node.js version-management tool)
-ARG NVS_HOME="/home/vsonline/.nvs"
+ARG NVS_HOME="/home/codespace/.nvs"
 RUN git clone -b v1.5.4 -c advice.detachedHead=false --depth 1 https://github.com/jasongin/nvs ${NVS_HOME}
 RUN /bin/bash ${NVS_HOME}/nvs.sh install
 RUN rm -rf ${NVS_HOME}/.git
@@ -109,4 +109,4 @@ RUN rm ${NVS_HOME}/cache/*
 RUN ln -s /opt/nodejs/10.17.0/bin/node ${NVS_HOME}/cache/node
 RUN sed -i "s/node\/[0-9.]\+/node\/10.17.0/" ${NVS_HOME}/defaults.json
 
-CMD ["/.vsonline/bin/vso", "bootstrap"]
+CMD ["/.codespace/bin/vso", "bootstrap"]
