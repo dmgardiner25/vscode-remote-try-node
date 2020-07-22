@@ -109,4 +109,4 @@ RUN rm ${NVS_HOME}/cache/*
 RUN ln -s /opt/nodejs/10.17.0/bin/node ${NVS_HOME}/cache/node
 RUN sed -i "s/node\/[0-9.]\+/node\/10.17.0/" ${NVS_HOME}/defaults.json
 
-CMD ["/.codespace/bin/vso", "bootstrap"]
+CMD ["/.vsonline/bin/vso", "bootstrap"]
