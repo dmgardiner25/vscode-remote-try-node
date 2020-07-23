@@ -73,9 +73,9 @@ RUN apt-get update -yq\
     && rm -rf /tmp/git-2.27.0 \
     #
     # Install Git LFS
-    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-    && apt-get install -yq git-lfs \
-    && git lfs install \
+    #&& curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
+    #&& apt-get install -yq git-lfs \
+    #&& git lfs install \
     #
     # Install PowerShell
     && curl -s https://packages.microsoft.com/keys/microsoft.asc | (OUT=$(apt-key add - 2>&1) || echo $OUT) \
