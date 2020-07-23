@@ -1,8 +1,4 @@
 #!/bin/bash
-#--------------------------------------------------------------------------------------------------------------
-#  Copyright (c) Microsoft Corporation. All rights reserved.
-#  Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
-#--------------------------------------------------------------------------------------------------------------
 
 set -ex
 
@@ -36,12 +32,12 @@ function createLinks() {
     done
 }
 
-createLinks "3.1.202" "3.1.4"
+createLinks "3.1.201" "3.1.3"
 echo
 createLinks "3.0.103" "3.0.3"
 echo
 createLinks "2.2.402" "2.2.7"
 echo
-createLinks "2.1.806" "2.1.17"
+createLinks "2.1.805" "2.1.17"
 echo
 createLinks "1.1.14" "1.1.13"
