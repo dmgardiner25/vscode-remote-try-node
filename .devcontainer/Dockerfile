@@ -67,15 +67,15 @@ RUN apt-get update -yq\
     && rm vsls-linux-prereq-script.sh \
     #
     # Build git 2.27.0 from source
-    && apt-get install -y gettext \
-    && curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
-    && (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
-    && rm -rf /tmp/git-2.27.0 \
+    #&& apt-get install -y gettext \
+    #&& curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
+    #&& (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
+    #&& rm -rf /tmp/git-2.27.0 \
     #
     # Install Git LFS
-    #&& curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
-    #&& apt-get install -yq git-lfs \
-    #&& git lfs install \
+    && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
+    && apt-get install -yq git-lfs \
+    && git lfs install \
     #
     # Install PowerShell
     && curl -s https://packages.microsoft.com/keys/microsoft.asc | (OUT=$(apt-key add - 2>&1) || echo $OUT) \
