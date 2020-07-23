@@ -29,7 +29,7 @@ ENV ORYX_ENV_TYPE=vsonline-present
 ENV DOTNET_ROOT=/home/codespace/.dotnet
 
 # Add script to fix .NET Core pathing
-#ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
+ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
 
 ADD git-ed.sh /tmp/codespace/git-ed.sh
 
@@ -67,10 +67,10 @@ RUN apt-get update -yq\
     && rm vsls-linux-prereq-script.sh \
     #
     # Build git 2.27.0 from source
-    #&& apt-get install -y gettext \
-    #&& curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
-    #&& (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
-    #&& rm -rf /tmp/git-2.27.0 \
+    && apt-get install -y gettext \
+    && curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
+    && (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
+    && rm -rf /tmp/git-2.27.0 \
     #
     # Install Git LFS
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
@@ -112,9 +112,9 @@ RUN apt-get update -yq\
     # Setup .NET Core
     # Hack to get dotnet core sdks in the right place - Oryx images do not put dotnet on the path because it will break AppService.
     # The following script will put the dotnet's at /home/codespace/.dotnet folder where dotnet will look by default.
-    #&& mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
-    #&& sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
-    #&& rm /home/codespace/symlinkDotNetCore.sh \
+    && mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
+    && sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
+    && rm /home/codespace/symlinkDotNetCore.sh \
     #
     # Setup Node.js
     && sudo -u codespace npm config set prefix /home/codespace/.npm-global \
