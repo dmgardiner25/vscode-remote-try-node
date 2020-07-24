@@ -31,6 +31,10 @@ ENV DOTNET_ROOT=/home/codespace/.dotnet
 # Add script to fix .NET Core pathing
 ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
 
+RUN mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
+    && sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
+    && rm /home/codespace/symlinkDotNetCore.sh 
+
 ADD git-ed.sh /tmp/codespace/git-ed.sh
 
  # Install packages, setup codespace user
@@ -112,9 +116,6 @@ RUN apt-get update -yq\
     # Setup .NET Core
     # Hack to get dotnet core sdks in the right place - Oryx images do not put dotnet on the path because it will break AppService.
     # The following script will put the dotnet's at /home/codespace/.dotnet folder where dotnet will look by default.
-    && mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
-    && sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
-    && rm /home/codespace/symlinkDotNetCore.sh \
     #
     # Setup Node.js
     && sudo -u codespace npm config set prefix /home/codespace/.npm-global \
