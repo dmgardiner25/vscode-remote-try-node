@@ -20,6 +20,8 @@ function createLinks() {
     local sdkVersion="$1"
     local runtimeVersion="$2"
     
+    pwd
+
     cd "$splitSdksDir/$sdkVersion" 
 
     # Find folders with name as sdk or runtime version
