@@ -20,10 +20,6 @@ function createLinks() {
     local sdkVersion="$1"
     local runtimeVersion="$2"
     
-    pwd
-
-    ls /opt/dotnet/sdks
-
     cd "$splitSdksDir/$sdkVersion" 
 
     # Find folders with name as sdk or runtime version
@@ -40,7 +36,7 @@ function createLinks() {
     done
 }
 
-createLinks "3.1.202" "3.1.4"
+createLinks "3.1.301" "3.1.4"
 echo
 createLinks "3.0.103" "3.0.3"
 echo
