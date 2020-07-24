@@ -19,6 +19,8 @@ cp -f "$splitSdksDir/3/ThirdPartyNotices.txt" "$allSdksDir"
 function createLinks() {
     local sdkVersion="$1"
     local runtimeVersion="$2"
+
+    ls /opt/dotnet/sdks
     
     cd "$splitSdksDir/$sdkVersion" 
 
