@@ -2,7 +2,7 @@
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License. See https://go.microsoft.com/fwlink/?linkid=2090316 for license information.
 #-------------------------------------------------------------------------------------------------------------
-FROM mcr.microsoft.com/oryx/build:vso-20200706.2 as kitchensink
+FROM mcr.microsoft.com/oryx/build:vso-20200709.2 as kitchensink
 
 ARG BASH_PROMPT="PS1='\[\e]0;\u: \w\a\]\[\033[01;32m\]\u\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '"
 ARG FISH_PROMPT="function fish_prompt\n    set_color green\n    echo -n (whoami)\n    set_color normal\n    echo -n \":\"\n    set_color blue\n    echo -n (pwd)\n    set_color normal\n    echo -n \"> \"\nend\n"
@@ -30,10 +30,6 @@ ENV DOTNET_ROOT=/home/codespace/.dotnet
 
 # Add script to fix .NET Core pathing
 ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
-
-RUN mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
-    && sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
-    && rm /home/codespace/symlinkDotNetCore.sh 
 
 ADD git-ed.sh /tmp/codespace/git-ed.sh
 
@@ -116,6 +112,9 @@ RUN apt-get update -yq\
     # Setup .NET Core
     # Hack to get dotnet core sdks in the right place - Oryx images do not put dotnet on the path because it will break AppService.
     # The following script will put the dotnet's at /home/codespace/.dotnet folder where dotnet will look by default.
+    && mv /tmp/codespace/symlinkDotNetCore.sh /home/codespace/symlinkDotNetCore.sh \
+    && sudo -u codespace /bin/bash /home/codespace/symlinkDotNetCore.sh 2>&1 \
+    && rm /home/codespace/symlinkDotNetCore.sh \
     #
     # Setup Node.js
     && sudo -u codespace npm config set prefix /home/codespace/.npm-global \
