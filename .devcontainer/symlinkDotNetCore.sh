@@ -20,7 +20,7 @@ function createLinks() {
     local sdkVersion="$1"
     local runtimeVersion="$2"
     
-    cd "$splitSdksDir/$sdkVersion"
+    cd "$splitSdksDir/$sdkVersion" 
 
     # Find folders with name as sdk or runtime version
     find . -name "$sdkVersion" -o -name "$runtimeVersion" | while read subPath; do
