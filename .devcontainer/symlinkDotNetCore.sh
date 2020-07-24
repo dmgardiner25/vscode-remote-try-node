@@ -22,6 +22,8 @@ function createLinks() {
     
     pwd
 
+    ls /opt/dotnet/sdks
+
     cd "$splitSdksDir/$sdkVersion" 
 
     # Find folders with name as sdk or runtime version
