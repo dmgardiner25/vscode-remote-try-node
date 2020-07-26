@@ -33,7 +33,7 @@ ADD symlinkDotNetCore.sh /tmp/codespace/symlinkDotNetCore.sh
 
 ADD git-ed.sh /tmp/codespace/git-ed.sh
 
- # Install packages, setup codespace user
+# Install packages, setup codespace user
 RUN apt-get update -yq\
     && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -yq install --no-install-recommends apt-utils dialog 2>&1 \
@@ -54,6 +54,14 @@ RUN apt-get update -yq\
     # Be sure git is up to date due to DSA 4659-1, DSA 4657-1
     && apt-get upgrade -yq git \
     #
+    # Install GitHub CLI v 0.11.0
+    && echo "Downloading github CLI..." \
+    && curl -OL https://github.com/cli/cli/releases/download/v0.11.0/gh_0.11.0_linux_amd64.deb \
+    && echo "Installing github CLI..." \
+    && apt install ./gh_0.11.0_linux_amd64.deb \
+    && echo "Removing github CLI deb file after installation..." \
+    && rm -rf ./gh_0.11.0_linux_amd64.deb \
+    #
     # Optionally install debugger for development of VSO
     && if [ -z $DeveloperBuild ]; then \
         echo "not including debugger" ; \
@@ -67,10 +75,10 @@ RUN apt-get update -yq\
     && rm vsls-linux-prereq-script.sh \
     #
     # Build git 2.27.0 from source
-    #&& apt-get install -y gettext \
-    #&& curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
-    #&& (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
-    #&& rm -rf /tmp/git-2.27.0 \
+    && apt-get install -y gettext \
+    && curl -sL https://github.com/git/git/archive/v2.27.0.tar.gz | tar -xzC /tmp \
+    && (cd /tmp/git-2.27.0 && make -s prefix=/usr/local all && make -s prefix=/usr/local install) \
+    && rm -rf /tmp/git-2.27.0 \
     #
     # Install Git LFS
     && curl -s https://packagecloud.io/install/repositories/github/git-lfs/script.deb.sh | bash \
@@ -119,13 +127,16 @@ RUN apt-get update -yq\
     # Setup Node.js
     && sudo -u codespace npm config set prefix /home/codespace/.npm-global \
     && npm config -g set prefix /home/codespace/.npm-global \
+    #
     # Install nvm (popular Node.js version-management tool)
     && sudo -u codespace curl -s -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.35.1/install.sh | sudo -u codespace bash 2>&1 \
     && rm -rf /home/codespace/.nvm/.git \
+    # 
     # Install nvs (alternate cross-platform Node.js version-management tool)
     && sudo -u codespace git clone -b v1.5.4 -c advice.detachedHead=false --depth 1 https://github.com/jasongin/nvs ${NVS_HOME} 2>&1 \
     && sudo -u codespace /bin/bash ${NVS_HOME}/nvs.sh install \
     && rm -rf ${NVS_HOME}/.git \
+    #
     # Clear the nvs cache and link to an existing node binary to reduce the size of the image.
     && rm ${NVS_HOME}/cache/* \
     && sudo -u codespace ln -s /opt/nodejs/10.17.0/bin/node ${NVS_HOME}/cache/node \
@@ -138,6 +149,9 @@ RUN apt-get update -yq\
     && sudo -u codespace mkdir -p /home/codespace/.local/bin \
     && install -o codespace -g codespace -m 755 /tmp/codespace/git-ed.sh /home/codespace/.local/bin/git-ed.sh \
     && sudo -u codespace git config --global core.editor "/home/codespace/.local/bin/git-ed.sh" \
+    #
+    # Alias code-insiders to code for easy terminal file editing
+    && echo $'\nif [[ $(which code-insiders) && ! $(which code) ]]; then alias code=code-insiders; fi' >> /home/codespace/.bashrc \
     #
     # Clean up
     && apt-get autoremove -y \
