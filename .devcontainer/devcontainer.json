@@ -3,7 +3,7 @@
 	"dockerFile": "Dockerfile",
 	"remoteUser": "node",
 	"workspaceMount": "source=${localWorkspaceFolder},target=/home/codespace/workspace,type=bind,consistency=cached",
-	"workspaceFolder": "/home/codespace/workspace",
+	"workspaceFolder": "/home/node/workspace",
 	"runArgs": [ "--cap-add=SYS_PTRACE", "--security-opt", "seccomp=unconfined" ],
 
 	// Add the IDs of extensions you want installed when the container is created.
